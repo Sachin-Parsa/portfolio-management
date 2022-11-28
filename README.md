@@ -11,3 +11,9 @@ Stock market prediction is one of the oldest and most challenging tasks, it has 
 
 •	Figures folder contains all the graphs and tables
 
+# Results
+
+19.6% cummalative returns in October of 2022
+
+
+<img width="800" alt="Figure20" src="https://user-images.githubusercontent.com/22672001/204211105-4c9bd5ba-baf6-42fc-8424-e110c1c28d5a.png">
