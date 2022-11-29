@@ -1,0 +1,368 @@
+\documentclass[12pt,a4paper, twoside]{article}
+
+% Language setting
+% Replace `english' with e.g. `spanish' to change the document language
+\usepackage[english]{babel}
+
+% Set page size and margins
+% Replace `letterpaper' with `a4paper' for UK/EU standard size
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage{fancyhdr}
+\usepackage{caption}
+\setlength\columnsep{25pt}
+\usepackage{xcolor}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{geometry}
+\usepackage{wrapfig}
+\usepackage[super]{nth}
+\setlength{\arrayrulewidth}{0.7mm}
+\setlength{\tabcolsep}{7pt}
+\renewcommand{\arraystretch}{1}
+\graphicspath{ {./images/} }
+
+\title{Stock Market Portfolio
+Management with Time Series and
+Sentiment Analysis\vspace{-2em}}
+
+\begin{document}
+
+\begin{titlepage}
+    \begin{center}
+        \vspace*{1cm}
+            
+        \huge
+        \textbf{Stock Market Portfolio Management with Time Series and Sentiment Analysis}
+            
+        \vspace{0.5cm}
+            
+        \vspace{1.5cm}
+
+        \LARGE
+        \textbf{Sachin Parsa}
+            
+        \vfill
+        \LARGE
+        \textbf{Master of Science in Computer Science\\
+        University of Illinois at Chicago\\}
+            
+        \vspace{0.8cm}
+            
+            
+        \Large
+        Committee Members: Dr. Natalie Parde, Dr. Cornelia Caragea\\
+        Supervised By: Dr. Natalie Parde\\
+        UIN: 662046242\\
+        Fall 2022
+            
+    \end{center}
+\end{titlepage}
+\pagestyle{fancy}
+\fancyhead{}
+\fancyhead[RO,LE]{\textbf{Stock Market Portfolio Management}}
+\fancyhead[RE, LO]{\thepage}
+\fancyfoot{} % clear all footer fields
+\tableofcontents
+\newpage
+\fancypagestyle{plain}{% emulate the plain style
+  \renewcommand{\headrulewidth}{0pt}%
+  \fancyhf{}% clear all fields
+  \fancyfoot[LO]{This project is made public on : \href{https://github.com/Sachin-Parsa/portfolio-management}{Project Github Page}
+}
+  
+}
+\maketitle
+\begin{abstract}
+    \indent
+    Stock market prediction is one of the oldest and most challenging tasks, leading to the creation of the \$100 billion Fintech industry. There are so many microeconomics and macroeconomic concepts that determine the movement of stocks. I hypothesize that taking the historic performance of stock, public sentiment, and risk calculations are some of the most influential reasons for stock movements. In this project, the objective is to make an optimal stock portfolio using machine learning concepts like time series analysis, sentiment analysis, and clustering to filter the best stocks. With this list of stocks, I use a portfolio optimization technique, which minimizes the Sharpe ratio in order to reduce the risk and maximize return on investment. This strategy is tested by creating a portfolio for October of 2022 and comparing the performance of the portfolio with the performance of the S \& P 500 index.
+\end{abstract}
+\vspace{0.5cm}
+\begin{multicols}{2}
+\section{Introduction}
+    \indent 
+    Stocks are known to have characteristics based on their historic performance. If a stock has gone up 100\% in one day, it has the potential to do the same in the future, given similar market conditions. This was the primary motivation behind using time series to analyze historic performance of a stock and provide predictions for the future. The annual returns of the stock also show a strong indication of the historic performance. Analyzing annual returns and comparing it to other stocks in the market is another indicator for future performance.
+    
+    Stocks are also highly influenced by emotions, which has become more prevalent in recent years after the pandemic in 2020. Fundamental analysis does not work when evaluating stocks. The market is driven by sentiment and potential rather than assets and earnings; therefore, the other aspect of the project involves understanding the sentiment of the stock by analyzing news headlines related to the stocks.
+    \newline
+    \indent 
+    Risk is another important metric used for making investment decisions. Fintech firms spend billions of dollars to minimize risks in their portfolios. Using various machine learning methods, this project takes factors such as historic performance, risk, and stock sentiment into account to tackle different areas. Analyzing historic performance is done using time series analysis. Clustering is used to analyze annual returns and compare performance of different stocks. Sentiment analysis is used to analyze the emotion of the stock and portfolio optimization is done to minimize risk. The goal of the project is to provide a portfolio of the best performing stocks and the allocation of funds within the portfolio to maximize capital gains. The portfolio’s cumulative gains are than compared to the gains of S \& P 500 to analyze the portfolio performance.
+
+\section{Literature Review}
+\subsection{FinBERT: Financial Sentiment Analysis with Pre-trained Language Models:}
+Sentiment analysis is a complicated task which extracts sentiment from given text. The Bidirectional Encoder Representations from Transformers (BERT) model was a huge breakthrough producing great results for sentiment analysis. The BERT model, however, was a general sentiment model, which does not consider complex financial language. Therefore, the sentiment analysis model used in this project was the Financial BERT (FinBERT) model. This model is similar to the BERT model, but trained specifically for financial applications in order to account for domain specific language. The paper shows experiments comparing the BERT model and the FinBERT model performance. The author hypothesizes that the FinBERT model will perform better than any other models given financial data. [1] The FinBERT model reduces the number of layers used compared to the BERT model. It can retain 97\% of the performance with 40\% less parameters. The accuracy of the model is also higher than 80\% which is impressive for sentiment analysis tasks. [2]
+
+There are a few drawbacks to the FinBERT model. One of the biggest issues is that the model does not perform well when it encounters numbers. In the absence of directional text, it usually characterizes given text as neutral. The FinBERT architecture is very similar to the BERT model with a few modifications. It uses slanting triangular learning rates, freezing the classification layer. The layers are gradually unfrozen such that the lowest level in the architecture is the least fine-tuned. Through the experimentation of the paper, it is proven that the FinBERT model is faster, cheaper, and more accurate than the BERT model.
+
+\section{Methodology}
+    \indent 
+    Different data sets were created for time series and sentiment analysis. Using Application Programming Interfaces (API) and various python libraries, the historic performance of the stocks and the headlines associated with the stocks were collected. The time series model was then trained for four years’ worth of stock market data from September of 2018 to September of 2022 using the 29 stocks in the Dow Jones Industrial Average index (DJIA). The trained time series model was then tested for October 2022 to check for the accuracy of the predictions. Clustering techniques were used to remove low-performing stocks from consideration in the portfolio.
+    \newline
+    The headlines for the stocks were collected from Yahoo Finance and other news outlets using API calls. The sentiment analysis model used was FinBERT which is a pre-trained model and was tested on the headlines data set. The final step was to use the best performing stocks filtered by the previous steps and optimize the portfolio. A function is then optimized to find the appropriate allocation of funds in the portfolio. The portfolio performance is then compared to the performance of the S \& P 500 index.  
+
+\subsection{Data Collection}
+    The first data set was collected using pandas data reader and Yahoo Finance. The data consists of all the stock data for the 29 stocks in the DJIA from Sept \nth{30} of 2018 to Sept \nth{30}, 2022 (excluding all non-trading days). Figure 1 shows a snapshot of the data set.
+    \begin{center}
+        \includegraphics[scale=0.60, width=75mm]{images/Figure1.png}
+        \captionof{figure}{Data set containing historic data}
+    \end{center}
+    
+    The data set consists of 29203 rows since it has 4 years worth of trading information for 29 stocks and 8 columns. The columns are date, open (the price at which the stock opens on the given date), high (the highest price of the stock in a given trading day),  low (the lowest price of the stock in a given trading day), close (the price at which the stock closes on the given day), volume (the number of stocks traded on the given trading day), ticker (the name of the stock being traded), and adjusted close (amended stock price to account for any corporate actions like stock splits, dividends etc.). The information used in this project was the ticker name, date, open price, and the adjusted close price. The adjusted close was used in the function optimization part of the project. The data set in figure 1 was used for time series analysis, to train the model as well as the clustering task to analyze annual returns. The same method of using pandas data reader and Yahoo Finance was used to get the test data for October of 2022 and the data for S \& P 500.
+    \newline
+    The headlines used for this project came from web-scraping Yahoo Finance. Python’s library, “Beautiful Soup”, was used to grab response text from the Yahoo Finance’s web page for each provided ticker symbol. The Beautiful Soup library’s in-built functions, find and find all, found all the headlines and dates for each ticker. This allowed for filtering so that only October headlines could be extracted. Figure 2 shows the resultant data set.
+    \begin{center}
+        \includegraphics[scale=0.60, width=75mm]{images/Figure2.png}
+        \captionof{figure}{Sentiment Analysis Dataset}
+    \end{center}
+
+\subsection{Clustering}
+The data set was first pre-processed by finding the average annual returns for each stock over the four-year period. Pre-processing steps like removing null values and converting the data set from a long to a wide format were done. A new data frame, which only consisted of the stock ticker and the annual returns, was made. The data was then normalized, and the scaled data was then used to determine the best clustering model.
+ 
+The models considered included: K-means, hierarchical single-linkage, hierarchical complete-linkage, and DBSCAN. The silhouette coefficient was used as an evaluation metric for each model to determine the best model. The parameters used for each model are as follows:
+ \begin{itemize}
+  \item K-Means: 3 clusters, 10 iterations and random clustering
+  \item Single linkage: 3 clusters, Euclidean distance
+  \item Complete linkage: 3 clusters, Euclidean distance
+  \item DBSCAN: eps = 0.5, Euclidean distance
+\end{itemize}
+ 
+The clusters were plotted based on the annual returns, which provided the low, medium, and high performing stocks. Apple’s annual returns were 46\%, which was much higher than the rest of the other DJIA stocks. Therefore, Apple stock was considered as an outlier and removed for the consideration of the clustering model. Since, K-means clustering and complete linkage methods use Euclidean distance for analysis, it causes the models to be sensitive to outliers. After determining the best model by the silhouette coefficient, the low performing stocks are removed from the portfolio consideration. 
+
+\subsection{Time Series Model}
+The model was trained on 4 years of data from Sept \nth{30}, 2018, to Sept \nth{30}, 2022. The SARIMA time series model was used for analysis where we set the p,d,q values to 1 in order to provide the best results. The p value is the number of auto-regressive terms. The d value is the difference order in the trend, and the q value is the moving average for the trend. Since the SARIMA model was used, there are three additional seasonality parameters to consider, P, D, Q. These are the seasonality auto-regressive order, seasonal difference order, and the seasonal moving average respectively. There is also an s value, which is the number of time steps for a single seasonal period. The value for s is set to 12, so the yearly seasonality, like the holiday effect, is considered as well. These values provided the best results for the time series model.
+ 
+The correlation, the mean squared error, the percent change, and percent increase were all calculated for the different stocks and were compared to the actual stock performance. The percent error is calculated for the predicted price increase and the actual price increase to check for the accuracy of the time series model. The percent change was used to normalize the results, since some stocks could be worth much more than the others. The predicted and the actual values of all the considered stocks were plotted for comparison. The data was then sorted by the percent increase in the stocks. Finally, the top five stocks were filtered such that only those were considered for the portfolio.
+
+\subsection{Sentiment Analysis}
+    The FinBERT model was used for sentiment analysis. The model is like the BERT model except it was trained on a financial corpus called TRC2-financial (subset of Reuters TRC2) and financial phrase bank. TRC2-financial was filtered using financial keywords, and it includes 46,143 documents with more than 29M words and nearly 400K sentences.[2] Financial phase bank consists of 4845 English sentences selected from financial news. [2] The data set consisted of the headlines of the top 5 stocks, which were filtered by the time series and clustering models. These headlines were manually annotated to check for accuracy. The movement of stocks is unaffected by neutral headlines, so these were disregarded in the model. The model was imported from hugging face and the pipeline was made with the help of the transformers library.
+     
+    The model creation involved using a learning rate of 3e-5 and ran until there is no improvement in validation loss for 10 epochs. The pre-trained model was imported and it was run on the collected headlines to find the sentiment. The scores provided for each sentiment were then classified into positive if the score was more than 0.5 and negative if the score was less than or equal to 0.5. The predicted labels were then recorded next to the actual values for comparison. The precision, recall, F1 score, and accuracy were calculated to evaluate the model. If there were more positive than negative headlines then stock was removed from portfolio consideration. The positive and negative sentiment was also seen over the course of the month to compare the performance and sentiment of the portfolio. After this step, the final list of stocks was created for portfolio optimization.
+\subsection{Portfolio Optimization}
+The final portfolio list is provided after the clustering, time series and sentiment analysis models filter from the initial list of 29 stocks. The main criteria for optimization of the portfolio is Sharpe ratio. It is a metric, which adjusts returns while also considering risk. Minimizing risk in a portfolio and maximizing capital gains are the primary objectives of the project. Hence, The Sharpe ratio is used as the metric for portfolio optimization. It is calculated by subtracting the return of the portfolio value with the risk-free rate, which is divided by the standard deviation of the portfolio’s excess return. In this experiment the return in portfolio is the average of the daily returns of the portfolio. The standard deviation of the portfolio’s excess return is considered to be the standard deviation of the daily returns of the portfolio.
+\newline
+\indent
+The Sharpe ratio is an annualized measurement, and it varies significantly if different intervals are used. Therefore, to adjust for daily returns Sharpe ratio needs to be normalized by multiplying the square root of 252. There are 252 trading days in a year so multiplying this value to the Sharpe ratio provides the normalized results. The starting value is taken to be 1 million dollars, but this can be customized according to personal finances.
+\newline
+\indent
+Portfolio optimization used the minimize function from the scipy library. This function minimizes a scalar function. Since we want to maximize the Sharpe ratio, the minimize function is applied to minimize the negative of the Sharpe ratio. This finally provides what percentage of your money should be assigned to which stock, such that capital gains are maximized. If this portfolio works better than the performance of SPY, which is a common measure of success, it shows that the strategy of using these machine learning techniques for prediction is viable.
+
+\section{Evaluation and Results}
+\subsection{Clustering}
+The annual returns were calculated for all the stocks in Dow Jones industrial average and three different clustering techniques were used to determine the best model for clustering. Figure 3 shows the results for K-means clustering with the outlier Apple. Apple is considered an outlier since it performed 16\% better then the next best performing stock. The silhouette coefficient was 0.66 and the high performing cluster only consisted of Apple and Microsoft. Since, K-Means clustering is outlier sensitive, Apple was removed for the remaining clustering tasks. 
+\newline
+\indent
+The silhouette coefficient for K-Means clustering when Apple was removed was 0.68. The silhouette coefficient was the metric used to compare the different models. Figure 4 shows the resultant clusters with K-Means without Apple. 
+
+\begin{center}
+        \includegraphics[scale=0.3]{images/Figure3.png}
+        \captionof{figure}{K-Means with Apple}
+    \end{center}
+    
+    \begin{center}
+        \includegraphics[scale=0.3]{images/Figure4.png}
+        \captionof{figure}{K-Means without Apple}
+    \end{center}
+
+The single linkage hierarchical clustering resulted in a much lower silhouette coefficient of 0.38, which is significantly lower compared to the K-Means clustering method. The resultant clusters of the single linkage hierarchical method are shown in figure 5.
+ 
+    \begin{center}
+        \includegraphics[scale=0.3]{images/Figure5.png}
+        \captionof{figure}{Clustering with single linkage}
+    \end{center}
+ 
+Everything was labeled into one cluster except for Boeing and Microsoft which clearly shows a poor performing model. The complete linkage method however produced the same results as the K-Means clustering method with a silhouette coefficient of 0.68 and the clusters had the same results as K-Means as shown in figure 4. DBSCAN was the last clustering techniques used and the silhouette coefficient was 0.49 which is worse than K-Means and complete linkage method. It only had 2 clusters and the clustering was not meaningful for analysis. The results are shown in figure 6.
+ 
+    \begin{center}
+        \includegraphics[scale=0.3]{images/Figure7.png}
+        \captionof{figure}{Clustering with DBSCAN}
+    \end{center}
+ 
+After analyzing the different clustering techniques, the K-Means clustering, and complete linkage model were the best performing models. The cluster thresholds after removing apple are shown in table 1.
+\begin{center}
+\begin{tabular}{ |p{3cm}|p{2cm}|  }
+\hline
+\multicolumn{2}{|c|}{\textbf{Stock Performance for Returns}} \\
+\hline
+\textbf{Clusters} & \textbf{Annual Returns} \\
+\hline
+Low & $<1\%$ \\
+Medium & 1\% - 19\% \\
+High & $>20\%$ \\
+\hline
+\end{tabular}
+\captionof{table}{Resultant annual returns clusters} 
+\end{center}
+
+This provided the initial filtering of the stocks by removing the low performing stocks, which were INTC, MMM, VZ, WBA and BA. Table 2 summarizes the results of the clustering experiment. 
+
+\begin{center}
+\begin{tabular}{ | p{3.5cm} |p{2.5cm}|  }
+\hline
+\multicolumn{2}{|c|}{\textbf{Clustering Model Comparison}} \\
+\hline
+\textbf{Model} & \textbf{Silhouette Coefficient} \\
+\hline
+K-Means & 0.68 \\
+Single Linkage & 0.38\\
+Complete Linkage & 0.68 \\
+DBSCAN & 0.49 \\
+\hline
+\end{tabular}
+\captionof{table}{Silhouette coefficients for different clustering methods} 
+\end{center}
+
+\subsection{Time Series}
+The time series model was run to predict the month of October 2022 for the 29 different stocks and the results were stored in a dataframe. The dataframe contained the the predicted values, actual values, correlation, mean square error, and percent error.The predicted and the actual values were stored to compare the results and the percent error, correlation and mean square error were calculated for each stock. These stocks were later sorted based on their predicted percent increase to normalize the comparison between the stocks, and the top 5 performing stocks were filtered out. The top 5 stocks were AMGN, JPM, TRV, CVX and CAT. The results of the predicted and the actual values are summarized in table 3. While the percent error and correlation of the stocks is given in table 4.
+
+\begin{center}
+\begin{tabular}{ | p{1.5cm} |p{2cm}| p{2cm}|}
+\hline
+\multicolumn{3}{|c|}{\textbf{Time series comparison}} \\
+\hline
+\textbf{Stock} & \textbf{Predicted Increase} & \textbf{Actual Increase}\\
+\hline
+AMGN & 16.45\% & 17.93\%\\
+JPM & 16.63\% & 19.01\%\\
+TRV & 17.08\% & 17.95\% \\
+CVX & 25.27\% & 19.53\%\\
+CAT & 27.39\% & 28.61\%\\
+\hline
+\end{tabular}
+\captionof{table}{Time series predictions and actual data} 
+\end{center}
+
+\begin{center}
+\begin{tabular}{ | p{1.5cm} |p{2.5cm}| p{2cm}|}
+\hline
+\multicolumn{3}{|c|}{\textbf{Top 5 Performing Stocks}} \\
+\hline
+\textbf{Stock} & \textbf{Correlation} & \textbf{Percent Error}\\
+\hline
+AMGN & 84.60\% & 8.27\%\\
+JPM & 91.90\% & 12.53\%\\
+TRV & 94.90\% & 4.83\% \\
+CVX & 94.22\% & 29.43\%\\
+CAT & 93.66\% & 4.25\%\\
+\hline
+\end{tabular}
+\captionof{table}{Time series model performance} 
+\end{center}
+
+
+ 
+The predictions and the actual values were plotted for comparison and the results are shown for the top 5 performing stocks in figures 7 - 11. The red line shows the predicted price, and the blue is the actual price. The x axis shows the days it is being predicted after the end of the training period which is Sept \nth{30}. The y axis shows the price of the stock.
+\hspace{10 cm}
+\begin{center}
+    \includegraphics{images/Figure9.png}
+    \captionof{figure}{AMGN}
+    \vspace{0.25cm}
+    \includegraphics{images/Figure10.png}
+    \captionof{figure}{CAT}
+    \vspace{0.25cm}
+    \includegraphics{images/Figure11.png}
+    \captionof{figure}{CVX} 
+    \vspace{0.25cm}
+    \includegraphics{images/Figure12.png}
+    \captionof{figure}{JPM}
+    \vspace{0.25cm}
+    \includegraphics{images/Figure13.png}
+    \captionof{figure}{TRV}
+    \vspace{0.25cm}
+
+\end{center}
+
+
+\subsection{Sentiment Analysis}
+The sentiment analysis model was evaluated using precision, recall, accuracy and F1 score. Figure 12 shows the results of the sentiment analysis model. 
+
+    \begin{center}
+        \includegraphics[scale=1]{images/Figure14.png}
+        \captionof{figure}{Results of sentiment analysis model}
+    \end{center}
+ 
+
+These results are impressive for a sentiment analysis task. The F1 score of 90\%  and accuracy of 82\% is very high compared to baseline accuracy of LSTM models, which is around 70\% accuracy and F1 scores is around 65\%. The data set is not evenly balanced since, the news API collects all the data related to the stock. Figure 13 shows the number of headlines for each stock:
+
+    \begin{center}
+        \includegraphics[scale=1]{images/Figure15.png}
+        \captionof{figure}{Number of headlines per stock}
+    \end{center}
+ 
+The final data set with the predicted values recorded is shown in figure 14:
+ 
+    \begin{center}
+        \includegraphics[scale=0.51]{images/Figure16.png}
+        \captionof{figure}{Sentiment analysis data set with predicted values}
+    \end{center}
+ 
+The data set consists of 161 total headlines and the predicted and the actual sentiment are stored next to each other for comparison. The model predicts a positive or negative label with 1 being positive and -1 being negative. The FinBERT model predicts a score based on the headline's text and if it is above 0.5 it is considered positive otherwise considered negative. The total number of positive and negative headlines for each stock were then plotted next to each other to analyze if there were any stocks, which had more negative headlines than positive headlines. The graph in figure 15 shows the results.
+ 
+    \begin{center}
+        \includegraphics{images/Figure17.png}
+        \captionof{figure}{Number of positive and negative headlines per stock}
+    \end{center} 
+
+As we can see from the graph, all the stocks except for TRV have more positive headlines than negative headlines. This indicates that TRV should be removed from consideration for the optimal portfolio.The number of positive and negative headlines throughout the month were recorded. This was to to analyze the overall portfolio sentiment throughout the timeline of the month. The results are shown in figure 16.
+
+    \begin{center}
+        \includegraphics[scale=0.6]{images/Figure18.png}
+        \captionof{figure}{Positive and negative headline over the course of October 2022}
+    \end{center}
+ 
+
+\subsection{Portfolio Optimization}
+The final portfolio considered for optimization were AMGN, JPM, CVX, and CAT. The experiment was run with and without TRV to analyze if it is considered a high-risk stock. The results were then compared to the performance of SPY. The portfolio performance and the SPY performance is comapred for the month of October 2022 in figure 17.
+
+    \begin{center}
+        \includegraphics[scale=0.3]{images/Figure19.png}
+        \captionof{figure}{ Comparison of SPY and portfolio performance with TRV}
+    \end{center}
+
+ 
+As shown in figure, the portfolio is performing far better than the S \& P 500 index. The resulting allocation of the portfolio are summarized in table 5. 0\% of the funds were allocated to TRV (the actual percent increase was the lowest among the top 5 stocks chosen for the portfolio) which confirms that the sentiment analysis was accurate for removing this stock from the portfolio. The total cumulative returns were 19.59\% while the SPY only increased by 5.35\%. The Sharpe ratio with TRV was 1.28 while it was 1.81 when it was removed. Since there was no allocation of funds to TRV the cummalative returns stayed the same for both portfolios. 
+ 
+As we can see TRV is set to 0 in this case, so this stock is high risk and hence avoided. The portfolio returns and the allocation are the same with and without TRV. This shows that the sentiment analysis model analyzing more negative headlines and eliminating it from the portfolio was accurate. The portfolio without TRV provides the same results just using less computation power.
+
+
+
+\begin{center}
+\begin{tabular}{ | c | c |  }
+\hline
+\multicolumn{2}{|c|}{\textbf{Final Allocation of Stocks}} \\
+\hline
+\textbf{Stock} & \textbf{Allocation} \\
+\hline
+AMGN & 42.17\% \\
+JPM & 1.09\%\\
+CVX & 41.89\% \\
+CAT & 14.84\% \\
+\hline
+\end{tabular}
+\end{center}
+\captionof{table}{Final allocations in portfolio} 
+\section{Conclusion}
+The experimentation done in this project does support the hypothesis that historic performance, sentiment, and risk are some of the most important factors to consider when making investments in the stock market. The final portfolio provides almost 14\% more increase in capital gains than the S \& P 500 index. There needs to be more data points to analyze, and the model has not seen extreme conditions like recessions to be able to properly predict the future month results.
+ 
+There were many challenges during this project, one of the biggest challenges was getting the news headlines and manually annotating them. Yahoo Finance does not store more than 1 month worth of headlines. Since the APIs for collecting this data is written, the model will collect this data and this limitation will no longer be a concern. The dataset collected for different stock headlines was manually annotated which might have some errors. This can be improved if it was annotated by a professional in finance. The project can provide the optimal portfolio and the associated headlines as well as the allocation of funds. The initially objectives and analysis were achieved by the project. The final cumulative returns of almost 20\% for a month is an impressive result.
+\section{Future Work}
+There are a lot of features which can be added to this project including customizing the risk a user is willing to take, the starting amount of money for the user as well. The initial stocks considered are just 29 from the Dow Jones industrial average, with more computation power we can do this for the S \& P 500 which consists of 500 stocks. There are other factors which can be considered for a particular stock like the volume, float, support, resistance, market conditions and risk/reward ratio. There can be more experimentation to determine if adding these features would benefit the model. There can be more data like twitter and reddit data which can be considered for the sentiment analysis as well. These features may provide better results than the 20\% increase in capital gains.
+
+\newpage
+\end{multicols}
+\begin{thebibliography}{2}
+\bibitem{textbook}
+ K. T. Jacob Devlin. Bert: Pre-training of deep bidirectional transformers for language understanding.
+
+\bibitem{textbook}
+D.H.ZhuangLiu.Finbert:Apre-trainedfinanciallanguagerepresentation model for financial text mining.
+
+\bibitem{textbook}
+Chen, Peng \& Niu, Aichen \& Liu, Duanyang \& Jiang, Wei \& Ma, Bin. (2018). Time Series Forecasting of Temperatures using SARIMA: An Example from Nanjing. IOP Conference Series: Materials Science and Engineering.
+
+\bibitem{textbook}
+ Dongkuan Xu & Yingjie Tian. (2015). A Comprehensive Survey of Clustering Algorithms
+\end{thebibliography}
+\end{document}
